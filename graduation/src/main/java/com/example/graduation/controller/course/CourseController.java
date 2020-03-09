@@ -1,10 +1,7 @@
 package com.example.graduation.controller.course;
 
 import com.example.graduation.request.BaseRequest;
-import com.example.graduation.request.course.CourseEvaRequest;
-import com.example.graduation.request.course.CourseSaveRequest;
-import com.example.graduation.request.course.CourseUpdateRequest;
-import com.example.graduation.request.course.requestEntity.GraPointCourseListRequest;
+import com.example.graduation.request.course.*;
 import com.example.graduation.response.BaseResponse;
 import com.example.graduation.response.course.CourseListResponse;
 import com.example.graduation.response.course.CourseModuleListResponse;
@@ -61,5 +58,10 @@ public class CourseController{
     public GraPointCourseListResponse getGraPointCourseList(GraPointCourseListRequest request){
         return courseService.getGraPointCourseList(request);
     }
+
+    public BaseResponse evaGraPointCourse(@RequestBody GraPointCourseEvaRequest request){
+        return courseService.evaGraPointCourse(request);
+    }
+
 
 }

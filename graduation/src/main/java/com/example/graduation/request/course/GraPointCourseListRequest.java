@@ -1,4 +1,4 @@
-package com.example.graduation.request.course.requestEntity;
+package com.example.graduation.request.course;
 
 import com.example.graduation.request.BaseRequest;
 

@@ -6,16 +6,14 @@ import com.example.graduation.entity.course.*;
 import com.example.graduation.entity.course.VO.*;
 import com.example.graduation.exception.IllegalInputException;
 import com.example.graduation.request.BaseRequest;
-import com.example.graduation.request.course.CourseEvaRequest;
-import com.example.graduation.request.course.CourseSaveRequest;
-import com.example.graduation.request.course.CourseUpdateRequest;
+import com.example.graduation.request.course.*;
 import com.example.graduation.request.course.requestEntity.EvaItem;
-import com.example.graduation.request.course.requestEntity.GraPointCourseListRequest;
 import com.example.graduation.response.BaseResponse;
 import com.example.graduation.response.course.CourseListResponse;
 import com.example.graduation.response.course.CourseModuleListResponse;
 import com.example.graduation.response.course.CourseStructureListResponse;
 import com.example.graduation.response.course.GraPointCourseListResponse;
+import com.example.graduation.validator.CourseValidation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,9 +26,14 @@ import java.util.stream.Collectors;
 @Service
 public class CourseService extends BaseService{
 
+    private final CourseAttach courseAttach;
 
-    @Autowired
-    private CourseAttach courseAttach;
+    protected final CourseValidation courseValidation;
+
+    public CourseService(CourseAttach courseAttach, CourseValidation courseValidation) {
+        this.courseAttach = courseAttach;
+        this.courseValidation = courseValidation;
+    }
 
     @Transactional(readOnly = true)
     public CourseListResponse getCourseList(BaseRequest request) {
@@ -151,7 +154,7 @@ public class CourseService extends BaseService{
         resultEntity.setStatus(CourseEvaResultEntity.STATUS_ACTIVE);
 
         courseEvaResultDao.save(resultEntity);
-        return  new BaseResponse();
+        return new BaseResponse();
     }
 
     private float getCourseEvaResult(List<EvaItem> evaItemList) {
@@ -191,5 +194,39 @@ public class CourseService extends BaseService{
         response.setCount(pointCourseEntityVOS.size());
         response.setPointCourseEntities(pointCourseEntityVOS);
         return response;
+    }
+
+    @Transactional
+    public BaseResponse evaGraPointCourse(GraPointCourseEvaRequest request) {
+        courseValidation.validatePointCourseCanBeEva(request.getPointCourseId(),request.getStudent_level());
+
+        GraduationPointCourseEvaResultEntity resultEntity = new GraduationPointCourseEvaResultEntity();
+        resultEntity.setPointCourseId(request.getPointCourseId());
+        resultEntity.setStudentLevel(request.getStudent_level());
+        resultEntity.setScore(getPointCourseEvaResult(request.getEvaItemList()));
+        resultEntity.setEvaCalJson(JSON.toJSONString(request.getEvaItemList()));
+        resultEntity.setEvaTime(new Timestamp(System.currentTimeMillis()));
+        resultEntity.setStatus(GraduationPointCourseEvaResultEntity.POINT_COURSE_EVA_STATUS_ACTIVE);
+        graduationPointCourseEvaResultDao.save(resultEntity);
+
+        return new BaseResponse();
+    }
+
+    private float getPointCourseEvaResult(List<EvaItem> evaItemList) {
+        float stuAvgScore = 0;
+        float stuExpectedScore = 0;
+        for(EvaItem item:evaItemList){
+            if(item.getStudentAvgScore() > item.getTargetScore()){
+                try {
+                    throw new IllegalInputException("输入中存在学生平均分数大于应得分");
+                } catch (IllegalInputException e) {
+                    e.printStackTrace();
+                }
+            }
+            stuAvgScore+=item.getStudentAvgScore();
+            stuExpectedScore+=item.getTargetScore();
+        }
+        float result = stuAvgScore/stuExpectedScore;
+        return Math.round(result*100)/100;
     }
 }

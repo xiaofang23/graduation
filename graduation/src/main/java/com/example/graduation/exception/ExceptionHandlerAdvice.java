@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @ControllerAdvice
 @ResponseBody
-public class ExceptionHanderAdvice {
+public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(IllegalInputException.class)
-    public ErrorResponse exceptionHander(IllegalInputException e){
+    public ErrorResponse exceptionHandler(IllegalInputException e){
         e.printStackTrace();
         ErrorResponse response = new ErrorResponse(e.getCode(),e.getMsg(),e.getData());
         return response;
     }
 
-}l
+}

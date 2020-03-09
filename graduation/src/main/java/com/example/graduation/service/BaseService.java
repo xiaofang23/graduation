@@ -36,8 +36,7 @@ public class BaseService extends DaoSupport {
     @Autowired
     protected GraduationPointCourseEvaResultDao graduationPointCourseEvaResultDao;
 
-    @Autowired
-    protected CourseValidation courseValidation;
+
 
 
 }
