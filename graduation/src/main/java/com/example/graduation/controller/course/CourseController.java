@@ -59,9 +59,14 @@ public class CourseController{
         return courseService.getGraPointCourseList(request);
     }
 
+    @RequestMapping(value = "/pointCourse/eva",method = RequestMethod.POST)
     public BaseResponse evaGraPointCourse(@RequestBody GraPointCourseEvaRequest request){
         return courseService.evaGraPointCourse(request);
     }
 
+    @RequestMapping(value = "/point/eva",method = RequestMethod.POST)
+    public BaseResponse evaPoint(@RequestBody GraPointEvaRequest request){
+        return courseService.evaGraPoint(request);
+    }
 
 }

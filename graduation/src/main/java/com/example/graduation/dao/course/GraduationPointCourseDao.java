@@ -34,4 +34,14 @@ public class GraduationPointCourseDao extends BaseDao<GraduationPointCourseEntit
         query.where(predicate);
         return getSession().createQuery(query).list();
     }
+
+    public List<GraduationPointCourseEntity> getByPointID(int pointId) {
+        CriteriaBuilder builder = getSession().getCriteriaBuilder();
+        CriteriaQuery<GraduationPointCourseEntity> query = builder.createQuery(GraduationPointCourseEntity.class);
+        Root<GraduationPointCourseEntity> root = query.from(GraduationPointCourseEntity.class);
+        query.select(root);
+        Predicate predicate = builder.equal(root.get("pointId"),pointId);
+        query.where(predicate);
+        return getSession().createQuery(query).list();
+    }
 }

@@ -2,6 +2,7 @@ package com.example.graduation.service;
 
 import com.alibaba.fastjson.JSON;
 import com.example.graduation.dao.attacher.CourseAttach;
+import com.example.graduation.dao.course.GraduationPointCourseDao;
 import com.example.graduation.entity.course.*;
 import com.example.graduation.entity.course.VO.*;
 import com.example.graduation.exception.IllegalInputException;
@@ -227,6 +228,39 @@ public class CourseService extends BaseService{
             stuExpectedScore+=item.getTargetScore();
         }
         float result = stuAvgScore/stuExpectedScore;
+        return Math.round(result*100)/100;
+    }
+
+    @Transactional
+    public BaseResponse evaGraPoint(GraPointEvaRequest request) {
+        courseValidation.validatePointCanBeEva(request.getPointId(),request.getStuLevel());
+        List<GraduationPointCourseEntity> pointCourseEntities = graduationPointCourseDao.getByPointID(request.getPointId());
+        List<Integer> pointCourseIds = pointCourseEntities.stream()
+                .map(GraduationPointCourseEntity::getId)
+                .collect(Collectors.toList());
+        List<GraduationPointCourseEvaResultEntity> evaResultEntities = graduationPointCourseEvaResultDao.getByPointCourseIdsAndStuLevel(pointCourseIds,request.getStuLevel());
+
+        if(pointCourseEntities.size() != evaResultEntities.size()){
+            try {
+                throw new IllegalInputException("当前指标点下的课程还未完全评测，无法进行评测");
+            } catch (IllegalInputException e) {e.printStackTrace(); }
+        }
+
+        GraduationPointEvaResultEntity resultEntity = new GraduationPointEvaResultEntity();
+        resultEntity.setPointId(request.getPointId());
+        resultEntity.setStudentLevel(request.getStuLevel());
+        resultEntity.setScore(getGraPointEvaResult(pointCourseEntities,evaResultEntities));
+        resultEntity.setEvaTime(new Timestamp(System.currentTimeMillis()));
+        resultEntity.setStatus(GraduationPointEvaResultEntity.POINT_EVA_STATUS_ACTIVE);
+        graduationPointEvaResultDao.save(resultEntity);
+        return new BaseResponse();
+    }
+
+    private float getGraPointEvaResult(List<GraduationPointCourseEntity> pointCourseEntities, List<GraduationPointCourseEvaResultEntity> evaResultEntities) {
+        float result = 0;
+        for(int i=0;i<pointCourseEntities.size();i++){
+            result = result + pointCourseEntities.get(i).getProportion() * evaResultEntities.get(i).getScore();
+        }
         return Math.round(result*100)/100;
     }
 }

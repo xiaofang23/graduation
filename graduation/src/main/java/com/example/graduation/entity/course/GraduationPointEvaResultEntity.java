@@ -5,8 +5,12 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "graduation_point_eva_result", schema = "bishe", catalog = "")
+@Table(name = "graduation_point_eva_result", schema = "bishe")
 public class GraduationPointEvaResultEntity {
+
+    public static final int POINT_EVA_STATUS_ACTIVE = 1;
+    public static final int POINT_EVA_STATUS_INACTIVE = 0;
+
     private int id;
     private Integer pointId;
     private Float score;
