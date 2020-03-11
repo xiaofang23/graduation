@@ -3,6 +3,9 @@ package com.example.graduation.service;
 import com.example.graduation.dao.DaoSupport;
 import com.example.graduation.dao.attacher.CourseAttach;
 import com.example.graduation.dao.course.*;
+import com.example.graduation.dao.user.AdminDao;
+import com.example.graduation.dao.user.StudentDao;
+import com.example.graduation.dao.user.TeacherDao;
 import com.example.graduation.entity.course.GraduationPointCourseEvaResultEntity;
 import com.example.graduation.validator.CourseValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +42,14 @@ public class BaseService extends DaoSupport {
     @Autowired
     protected GraduationPointCourseEvaResultDao graduationPointCourseEvaResultDao;
 
+    @Autowired
+    protected AdminDao adminDao;
 
+    @Autowired
+    protected TeacherDao teacherDao;
+
+    @Autowired
+    protected StudentDao studentDao;
 
 
 }
