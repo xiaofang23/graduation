@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -23,8 +25,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public BaseResponse UserLogin(@RequestBody UserLoginRequest request){
-        return userService.userLogin(request);
+    public BaseResponse UserLogin(@RequestBody UserLoginRequest request, HttpSession session){
+        return userService.userLogin(request,session);
     }
 
 }

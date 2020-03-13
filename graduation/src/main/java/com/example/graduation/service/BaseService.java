@@ -9,6 +9,7 @@ import com.example.graduation.dao.user.TeacherDao;
 import com.example.graduation.entity.course.GraduationPointCourseEvaResultEntity;
 import com.example.graduation.validator.CourseValidation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 public class BaseService extends DaoSupport {
 
@@ -51,5 +52,6 @@ public class BaseService extends DaoSupport {
     @Autowired
     protected StudentDao studentDao;
 
-
+    @Autowired
+    protected RedisTemplate redisTemplate;
 }

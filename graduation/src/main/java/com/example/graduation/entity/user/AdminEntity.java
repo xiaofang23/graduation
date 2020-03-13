@@ -1,12 +1,13 @@
 package com.example.graduation.entity.user;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 @Table(name = "admin", schema = "bishe")
-public class AdminEntity {
+public class AdminEntity implements Serializable {
 
     public static final int USER_STATUS_ACTIVE = 1;
     public static final int USER_STATUS_INACTIVE = -1;

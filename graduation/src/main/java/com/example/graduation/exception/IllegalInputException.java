@@ -14,6 +14,12 @@ public class IllegalInputException extends Exception {
         this.data = null;
     }
 
+    public IllegalInputException(int code,String msg){
+        this.msg = msg;
+        this.code = code;
+        this.data = null;
+    }
+
     public int getCode() {
         return code;
     }

@@ -1,12 +1,13 @@
 package com.example.graduation.entity.user;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 @Table(name = "student", schema = "bishe")
-public class StudentEntity {
+public class StudentEntity implements Serializable {
     private int id;
     private String studentName;
     private String mail;
