@@ -1,9 +1,14 @@
 package com.example.graduation.request.user;
 
+import javax.validation.constraints.NotNull;
+
 public class UserRegisterRequest {
 
+    @NotNull(message = "用户名不能为空")
     private String name;
+    @NotNull(message = "密码不能为空")
     private String password;
+    @NotNull(message = "邮箱不能为空")
     private String email;
 
     public String getName() {
