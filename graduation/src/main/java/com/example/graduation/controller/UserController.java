@@ -1,5 +1,6 @@
 package com.example.graduation.controller;
 
+import com.example.graduation.request.BaseRequest;
 import com.example.graduation.request.user.UserLoginRequest;
 import com.example.graduation.request.user.UserRegisterRequest;
 import com.example.graduation.response.BaseResponse;
@@ -20,13 +21,17 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/register/admin",method = RequestMethod.POST)
-    public BaseResponse AdminRegister(@RequestBody UserRegisterRequest request){
+    public BaseResponse adminRegister(@RequestBody UserRegisterRequest request){
         return userService.adminRegister(request);
     }
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public BaseResponse UserLogin(@RequestBody UserLoginRequest request, HttpSession session){
+    public BaseResponse userLogin(@RequestBody UserLoginRequest request, HttpSession session){
         return userService.userLogin(request,session);
+    }
+
+    public BaseResponse userLogout(@RequestBody BaseRequest request,HttpSession session){
+        return userService.userLogout(request,session);
     }
 
 }

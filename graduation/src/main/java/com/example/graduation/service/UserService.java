@@ -5,6 +5,7 @@ import com.example.graduation.entity.user.AdminEntity;
 import com.example.graduation.entity.user.StudentEntity;
 import com.example.graduation.entity.user.TeacherEntity;
 import com.example.graduation.exception.IllegalInputException;
+import com.example.graduation.request.BaseRequest;
 import com.example.graduation.request.user.UserLoginRequest;
 import com.example.graduation.request.user.UserRegisterRequest;
 import com.example.graduation.response.BaseResponse;
@@ -61,7 +62,6 @@ public class UserService extends BaseService {
         return new BaseResponse();
     }
 
-    // TODO: 2020/3/13  登录状态管理 将使用redis
     private BaseResponse studentLogin(UserLoginRequest request, HttpSession session) {
         StudentEntity studentEntity = userValidation.validateStudentLogin(request);
         redisTemplate.opsForValue().set(session.getId(), JSON.toJSONString(studentEntity), TimeUtil.TIME_TWENTY_MINUTE);
@@ -77,6 +77,11 @@ public class UserService extends BaseService {
     private BaseResponse adminLogin(UserLoginRequest request, HttpSession session) {
         AdminEntity adminEntity = userValidation.validateAdminLogin(request);
         redisTemplate.opsForValue().set(session.getId(),JSON.toJSONString(adminEntity), TimeUtil.TIME_TWENTY_MINUTE);
+        return new BaseResponse();
+    }
+
+    public BaseResponse userLogout(BaseRequest request, HttpSession session) {
+        redisTemplate.delete(session.getId());
         return new BaseResponse();
     }
 }
