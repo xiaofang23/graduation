@@ -263,4 +263,27 @@ public class CourseService extends BaseService{
         }
         return Math.round(result*100)/100;
     }
+
+    @Transactional
+    public BaseResponse addCourseTeacher(CourseTeacherSaveRequest request) {
+        courseValidation.validateCourseTeacherCanBeSave(request);
+
+        CourseTeacherEntity courseTeacherEntity = new CourseTeacherEntity();
+        courseTeacherEntity.setCourseId(request.getCourseId());
+        courseTeacherEntity.setTeacherId(request.getTeacherId());
+        courseTeacherEntity.setStatus(CourseTeacherEntity.COURSE_TEACHER_STATUS_ACTIVE);
+        courseTeacherEntity.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        courseTeacherDao.save(courseTeacherEntity);
+        return new BaseResponse();
+    }
+
+    @Transactional
+    public BaseResponse updateCourseTeacher(CourseTeacherUpdateRequest request) {
+        CourseTeacherEntity courseTeacherEntity = courseTeacherDao.getById(request.getCourseTeacherId());
+
+        courseTeacherEntity.setTeacherId(request.getTeacherId());
+        courseTeacherEntity.setStatus(request.getStatus());
+        courseTeacherDao.update(courseTeacherEntity);
+        return new BaseResponse();
+    }
 }

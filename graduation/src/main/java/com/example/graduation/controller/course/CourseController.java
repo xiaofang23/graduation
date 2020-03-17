@@ -69,4 +69,13 @@ public class CourseController{
         return courseService.evaGraPoint(request);
     }
 
+    @RequestMapping(value = "/teacher/add")
+    public BaseResponse addCourseTeacher(@RequestBody CourseTeacherSaveRequest request){
+        return courseService.addCourseTeacher(request);
+    }
+
+    @RequestMapping(value = "/teacher/update")
+    public BaseResponse updateCourseTeacher(@RequestBody CourseTeacherUpdateRequest request){
+        return courseService.updateCourseTeacher(request);
+    }
 }
