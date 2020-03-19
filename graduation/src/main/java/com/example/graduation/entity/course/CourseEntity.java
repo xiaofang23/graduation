@@ -5,11 +5,15 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "course", schema = "bishe", catalog = "")
+@Table(name = "course", schema = "bishe")
 public class CourseEntity {
 
     public static final int COURSE_INACTIVE = 0;
     public static final int COURSE_ACTIVE = 1;
+
+    public static final int COURSE_SCORE_METHOD_FIVE = 1;
+    public static final int COURSE_SCORE_METHOD_TWO = 2;
+    public static final int COURSE_SCORE_METHOD_HUNDRED = 3;
 
     private int id;
     private Integer courseStructureId;
@@ -28,7 +32,7 @@ public class CourseEntity {
     private String practicalHour;
     private Boolean isTest;
     private Boolean isCheck;
-    private String scoreMethod;
+    private Integer scoreMethod;
     private Integer preCourseId;
     private String suggestedSemester;
     private int status;
@@ -211,11 +215,11 @@ public CourseEntity(){}
 
     @Basic
     @Column(name = "score_method")
-    public String getScoreMethod() {
+    public Integer getScoreMethod() {
         return scoreMethod;
     }
 
-    public void setScoreMethod(String scoreMethod) {
+    public void setScoreMethod(Integer scoreMethod) {
         this.scoreMethod = scoreMethod;
     }
 

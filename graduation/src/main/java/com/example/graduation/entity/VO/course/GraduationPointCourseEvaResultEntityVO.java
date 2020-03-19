@@ -1,23 +1,25 @@
-package com.example.graduation.entity.course.VO;
+package com.example.graduation.entity.VO.course;
 
-import com.example.graduation.entity.course.GraduationPointEvaResultEntity;
+import com.example.graduation.entity.course.GraduationPointCourseEvaResultEntity;
 import org.springframework.beans.BeanUtils;
 
 import java.sql.Timestamp;
 
-public class GraduationPointEvaResultEntityVO {
+public class GraduationPointCourseEvaResultEntityVO {
 
     private int id;
-    private Integer pointId;
+    private Integer pointCourseId;
     private Float score;
     private Integer studentLevel;
     private Timestamp evaTime;
+    private String evaCalJson;
     private Integer status;
     private Timestamp createTime;
     private Timestamp updateTime;
 
+    private GraduationPointCourseEntityVO pointCourseEntity;
 
-    public GraduationPointEvaResultEntityVO(GraduationPointEvaResultEntity resultEntity){
+    public GraduationPointCourseEvaResultEntityVO(GraduationPointCourseEvaResultEntity resultEntity){
         BeanUtils.copyProperties(resultEntity,this);
     }
 
@@ -29,12 +31,12 @@ public class GraduationPointEvaResultEntityVO {
         this.id = id;
     }
 
-    public Integer getPointId() {
-        return pointId;
+    public Integer getPointCourseId() {
+        return pointCourseId;
     }
 
-    public void setPointId(Integer pointId) {
-        this.pointId = pointId;
+    public void setPointCourseId(Integer pointCourseId) {
+        this.pointCourseId = pointCourseId;
     }
 
     public Float getScore() {
@@ -61,6 +63,14 @@ public class GraduationPointEvaResultEntityVO {
         this.evaTime = evaTime;
     }
 
+    public String getEvaCalJson() {
+        return evaCalJson;
+    }
+
+    public void setEvaCalJson(String evaCalJson) {
+        this.evaCalJson = evaCalJson;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -83,5 +93,13 @@ public class GraduationPointEvaResultEntityVO {
 
     public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public GraduationPointCourseEntityVO getPointCourseEntity() {
+        return pointCourseEntity;
+    }
+
+    public void setPointCourseEntity(GraduationPointCourseEntityVO pointCourseEntity) {
+        this.pointCourseEntity = pointCourseEntity;
     }
 }

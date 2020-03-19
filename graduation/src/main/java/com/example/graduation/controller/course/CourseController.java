@@ -3,10 +3,7 @@ package com.example.graduation.controller.course;
 import com.example.graduation.request.BaseRequest;
 import com.example.graduation.request.course.*;
 import com.example.graduation.response.BaseResponse;
-import com.example.graduation.response.course.CourseListResponse;
-import com.example.graduation.response.course.CourseModuleListResponse;
-import com.example.graduation.response.course.CourseStructureListResponse;
-import com.example.graduation.response.course.GraPointCourseListResponse;
+import com.example.graduation.response.course.*;
 import com.example.graduation.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -69,13 +66,29 @@ public class CourseController{
         return courseService.evaGraPoint(request);
     }
 
-    @RequestMapping(value = "/teacher/add")
+    @RequestMapping(value = "/teacher/add",method = RequestMethod.POST)
     public BaseResponse addCourseTeacher(@RequestBody CourseTeacherSaveRequest request){
         return courseService.addCourseTeacher(request);
     }
 
-    @RequestMapping(value = "/teacher/update")
+    @RequestMapping(value = "/teacher/update",method = RequestMethod.POST)
     public BaseResponse updateCourseTeacher(@RequestBody CourseTeacherUpdateRequest request){
         return courseService.updateCourseTeacher(request);
     }
+
+    @RequestMapping(value = "/student/graPoint/list",method = RequestMethod.GET)
+    public StudentGraPointListResponse studentGraPointList( StudentGraPointListRequest request){
+        return courseService.getStudentGraPoints(request);
+    }
+
+    @RequestMapping(value = "/student/graPoint/cal",method = RequestMethod.GET)
+    public BaseResponse studentGraPointCal(StudentGraPointListRequest request){
+        return courseService.calStudentGraPoint(request);
+    }
+
+    @RequestMapping(value = "/student/save")
+    public BaseResponse studentCourseGradeSave(@RequestBody StudentCourseGradeSaveRequest request){
+        return courseService.saveStudentCourseGrade(request);
+    }
+
 }

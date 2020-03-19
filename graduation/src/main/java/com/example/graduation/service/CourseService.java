@@ -2,26 +2,28 @@ package com.example.graduation.service;
 
 import com.alibaba.fastjson.JSON;
 import com.example.graduation.dao.attacher.CourseAttach;
-import com.example.graduation.dao.course.GraduationPointCourseDao;
+import com.example.graduation.entity.VO.course.*;
+import com.example.graduation.entity.VO.user.StudentGraduationPointEntityVO;
 import com.example.graduation.entity.course.*;
-import com.example.graduation.entity.course.VO.*;
+import com.example.graduation.entity.course.StudentGraduationPointEntity;
+import com.example.graduation.entity.user.StudentEntity;
 import com.example.graduation.exception.IllegalInputException;
 import com.example.graduation.request.BaseRequest;
 import com.example.graduation.request.course.*;
 import com.example.graduation.request.course.requestEntity.EvaItem;
+import com.example.graduation.request.course.requestEntity.GradeItem;
 import com.example.graduation.response.BaseResponse;
-import com.example.graduation.response.course.CourseListResponse;
-import com.example.graduation.response.course.CourseModuleListResponse;
-import com.example.graduation.response.course.CourseStructureListResponse;
-import com.example.graduation.response.course.GraPointCourseListResponse;
+import com.example.graduation.response.course.*;
 import com.example.graduation.validator.CourseValidation;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -285,5 +287,106 @@ public class CourseService extends BaseService{
         courseTeacherEntity.setStatus(request.getStatus());
         courseTeacherDao.update(courseTeacherEntity);
         return new BaseResponse();
+    }
+
+    @Transactional(readOnly = true)
+    public StudentGraPointListResponse getStudentGraPoints(StudentGraPointListRequest request) {
+        StudentGraPointListResponse response = new StudentGraPointListResponse();
+        List<StudentGraduationPointEntity> pointEntities = studentGraPointDao.getListByStudents(request.getStudentId());
+        List<StudentGraduationPointEntityVO> pointEntityVOS = pointEntities.stream()
+                .map(studentGraduationPointEntity -> new StudentGraduationPointEntityVO(studentGraduationPointEntity))
+                .collect(Collectors.toList());
+        response.setStuPoints(pointEntityVOS);
+        return  response;
+    }
+
+    @Transactional
+    public BaseResponse saveStudentCourseGrade(StudentCourseGradeSaveRequest request) {
+        StudentCourseEntity courseEntity = new StudentCourseEntity();
+        courseEntity.setCourseId(request.getCourseId());
+        courseEntity.setStudentId(request.getStudentId());
+        courseEntity.setTeacherId(request.getTeacherId());
+        courseEntity.setStatus(StudentCourseEntity.STUDENT_COURSE_STATUS_ACTIVE);
+        courseEntity.setScore(getStudentCourse(request));
+        courseEntity.setCreateTime(new Timestamp(System.currentTimeMillis()));
+
+        studentCourseDao.save(courseEntity);
+        return new BaseResponse();
+    }
+
+    private String getStudentCourse(StudentCourseGradeSaveRequest request) {
+        if(request.getGrade_type()==StudentCourseGradeSaveRequest.GRADE_TYPE_FIVE
+        || request.getGrade_type() == StudentCourseGradeSaveRequest.GRADE_TYPE_TWO)
+            return request.getGrade();
+
+        float re = 0;
+        for(GradeItem item:request.getGradeItems()){
+            re = item.getProportion() * item.getStuGrade() + re;
+        }
+        re = Math.round(re*100)/100;
+        return String.valueOf(re);
+    }
+
+    @Transactional
+    public BaseResponse calStudentGraPoint(StudentGraPointListRequest request) {
+        List<GraduationPointEntity> pointEntities = graduationPointDao.getAll();
+        List<StudentCourseEntity> studentCourseEntities = studentCourseDao.getByStudentId(request.getStudentId());
+        Map<Integer,String> map = new HashMap<>();
+        for(StudentCourseEntity studentCourseEntity:studentCourseEntities){
+            map.put(studentCourseEntity.getCourseId(),studentCourseEntity.getScore());
+        }
+        Map<String,String> logMap = new HashMap<>();
+        //遍历每个指标
+        for(GraduationPointEntity pointEntity:pointEntities){
+            logMap.clear();
+            //获取指标下 对应的课程
+            List<GraduationPointCourseEntity> courseEntities = graduationPointCourseDao.getByPointID(pointEntity.getId());
+            boolean pointIsFinished = true;
+            for(GraduationPointCourseEntity graduationPointCourseEntity:courseEntities){
+                CourseEntity courseEntity = courseDao.getById(graduationPointCourseEntity.getCourseId());
+                //学生该课成绩存在
+                if(map.containsKey(graduationPointCourseEntity.getCourseId())){
+
+                    if(!stuGradeOverExpected(map.get(graduationPointCourseEntity.getCourseId()),graduationPointCourseEntity.getExpectedScore(),courseEntity.getScoreMethod())){
+                        pointIsFinished = false;
+                    }
+                    logMap.put(courseEntity.getCourseName(),map.get(graduationPointCourseEntity.getCourseId())+"/"+graduationPointCourseEntity.getExpectedScore());
+                }else { //该课成绩不存在
+                    pointIsFinished = false;
+                    logMap.put(courseEntity.getCourseName(),"无成绩");
+                }
+            }
+            StudentGraduationPointEntity stuPointEntity = studentGraPointDao.getByStudentIdAndPointId(request.getStudentId(),pointEntity.getId());
+            if(stuPointEntity==null){
+                stuPointEntity = new StudentGraduationPointEntity();
+                stuPointEntity.setPointId(pointEntity.getId());
+                stuPointEntity.setStudentId(request.getStudentId());
+                stuPointEntity.setCourseJson(JSON.toJSONString(logMap));
+                stuPointEntity.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                stuPointEntity.setStatus(StudentGraduationPointEntity.STUDENT_POINT_UNFINISHED);
+                if(pointIsFinished){
+                    stuPointEntity.setStatus(StudentGraduationPointEntity.STUDENT_POINT_FINISHED);
+                }
+                studentGraPointDao.save(stuPointEntity);
+            }else {
+                stuPointEntity.setCourseJson(JSON.toJSONString(logMap));
+                if(pointIsFinished){
+                    stuPointEntity.setStatus(StudentGraduationPointEntity.STUDENT_POINT_FINISHED);
+                }
+                studentGraPointDao.update(stuPointEntity);
+            }
+        }
+        return new BaseResponse();
+    }
+
+    private boolean stuGradeOverExpected(String s, String expectedScore,Integer scoreMethod) {
+        if((scoreMethod==CourseEntity.COURSE_SCORE_METHOD_FIVE && s.compareTo(expectedScore) <=0))
+            return true;
+
+        if((scoreMethod==CourseEntity.COURSE_SCORE_METHOD_HUNDRED || scoreMethod==CourseEntity.COURSE_SCORE_METHOD_TWO)
+        && s.compareTo(expectedScore) >=0)
+            return true;
+
+        return false;
     }
 }

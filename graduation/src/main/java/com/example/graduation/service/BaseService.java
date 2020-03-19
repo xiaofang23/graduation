@@ -56,5 +56,11 @@ public class BaseService extends DaoSupport {
     protected CourseTeacherDao courseTeacherDao;
 
     @Autowired
+    protected StudentGraPointDao studentGraPointDao;
+
+    @Autowired
+    protected StudentCourseDao studentCourseDao;
+
+    @Autowired
     protected RedisTemplate redisTemplate;
 }

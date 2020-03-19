@@ -1,6 +1,6 @@
 package com.example.graduation.request.course;
 
-import com.example.graduation.entity.course.VO.CourseEntityVO;
+import com.example.graduation.entity.VO.course.CourseEntityVO;
 import com.example.graduation.request.BaseRequest;
 
 public class CourseUpdateRequest extends BaseRequest {

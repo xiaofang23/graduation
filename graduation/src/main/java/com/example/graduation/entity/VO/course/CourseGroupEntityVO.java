@@ -1,7 +1,6 @@
-package com.example.graduation.entity.course.VO;
+package com.example.graduation.entity.VO.course;
 
 import com.example.graduation.entity.course.CourseGroupEntity;
-import com.example.graduation.response.BaseResponse;
 import org.springframework.beans.BeanUtils;
 
 import java.sql.Timestamp;

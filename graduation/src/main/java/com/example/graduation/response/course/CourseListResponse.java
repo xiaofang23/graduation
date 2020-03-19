@@ -1,6 +1,6 @@
 package com.example.graduation.response.course;
 
-import com.example.graduation.entity.course.VO.CourseEntityVO;
+import com.example.graduation.entity.VO.course.CourseEntityVO;
 
 import java.util.List;
 

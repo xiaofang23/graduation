@@ -1,4 +1,4 @@
-package com.example.graduation.entity.course.VO;
+package com.example.graduation.entity.VO.course;
 
 import com.example.graduation.entity.course.CourseStructureEntity;
 import org.springframework.beans.BeanUtils;

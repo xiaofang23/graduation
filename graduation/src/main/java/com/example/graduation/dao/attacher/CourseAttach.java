@@ -1,19 +1,17 @@
 package com.example.graduation.dao.attacher;
 
 import com.example.graduation.entity.course.CourseEntity;
-import com.example.graduation.entity.course.GraduationPointCourseEntity;
 import com.example.graduation.entity.course.GraduationPointCourseEvaResultEntity;
 import com.example.graduation.entity.course.GraduationPointEntity;
-import com.example.graduation.entity.course.VO.CourseEntityVO;
-import com.example.graduation.entity.course.VO.GraduationPointCourseEntityVO;
-import com.example.graduation.entity.course.VO.GraduationPointCourseEvaResultEntityVO;
-import com.example.graduation.entity.course.VO.GraduationPointEntityVO;
+import com.example.graduation.entity.VO.course.CourseEntityVO;
+import com.example.graduation.entity.VO.course.GraduationPointCourseEntityVO;
+import com.example.graduation.entity.VO.course.GraduationPointCourseEvaResultEntityVO;
+import com.example.graduation.entity.VO.course.GraduationPointEntityVO;
 import com.example.graduation.service.BaseService;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository

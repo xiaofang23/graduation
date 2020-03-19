@@ -5,13 +5,17 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "graduation_point_course", schema = "bishe")
-public class GraduationPointCourseEntity {
+@Table(name = "student_course", schema = "bishe")
+public class StudentCourseEntity {
+
+    public static final int STUDENT_COURSE_STATUS_ACTIVE = 1;
+    public static final int STUDENT_COURSE_STATUS_INACTIVE = -1;
+
     private int id;
-    private Integer pointId;
+    private Integer studentId;
+    private Integer teacherId;
     private Integer courseId;
-    private Integer proportion;
-    private String expectedScore;
+    private String score;
     private Integer status;
     private Timestamp createTime;
     private Timestamp updateTime;
@@ -27,13 +31,23 @@ public class GraduationPointCourseEntity {
     }
 
     @Basic
-    @Column(name = "point_id")
-    public Integer getPointId() {
-        return pointId;
+    @Column(name = "student_id")
+    public Integer getStudentId() {
+        return studentId;
     }
 
-    public void setPointId(Integer pointId) {
-        this.pointId = pointId;
+    public void setStudentId(Integer studentId) {
+        this.studentId = studentId;
+    }
+
+    @Basic
+    @Column(name = "teacher_id")
+    public Integer getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(Integer teacherId) {
+        this.teacherId = teacherId;
     }
 
     @Basic
@@ -47,23 +61,13 @@ public class GraduationPointCourseEntity {
     }
 
     @Basic
-    @Column(name = "proportion")
-    public Integer getProportion() {
-        return proportion;
+    @Column(name = "score")
+    public String getScore() {
+        return score;
     }
 
-    public void setProportion(Integer proportion) {
-        this.proportion = proportion;
-    }
-
-    @Basic
-    @Column(name = "expected_score")
-    public String getExpectedScore() {
-        return expectedScore;
-    }
-
-    public void setExpectedScore(String expectedScore) {
-        this.expectedScore = expectedScore;
+    public void setScore(String score) {
+        this.score = score;
     }
 
     @Basic
@@ -77,7 +81,7 @@ public class GraduationPointCourseEntity {
     }
 
     @Basic
-    @Column(name = "create_time")
+    @Column(name = "create_Time")
     public Timestamp getCreateTime() {
         return createTime;
     }
@@ -87,7 +91,7 @@ public class GraduationPointCourseEntity {
     }
 
     @Basic
-    @Column(name = "update_time")
+    @Column(name = "update_Time")
     public Timestamp getUpdateTime() {
         return updateTime;
     }
@@ -100,12 +104,12 @@ public class GraduationPointCourseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GraduationPointCourseEntity that = (GraduationPointCourseEntity) o;
+        StudentCourseEntity that = (StudentCourseEntity) o;
         return id == that.id &&
-                Objects.equals(pointId, that.pointId) &&
+                Objects.equals(studentId, that.studentId) &&
+                Objects.equals(teacherId, that.teacherId) &&
                 Objects.equals(courseId, that.courseId) &&
-                Objects.equals(proportion, that.proportion) &&
-                Objects.equals(expectedScore, that.expectedScore) &&
+                Objects.equals(score, that.score) &&
                 Objects.equals(status, that.status) &&
                 Objects.equals(createTime, that.createTime) &&
                 Objects.equals(updateTime, that.updateTime);
@@ -113,6 +117,6 @@ public class GraduationPointCourseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, pointId, courseId, proportion, expectedScore, status, createTime, updateTime);
+        return Objects.hash(id, studentId, teacherId, courseId, score, status, createTime, updateTime);
     }
 }
